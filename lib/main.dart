@@ -2,11 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scholar_chat/pages/blocs/auth_bloc/auth_bloc.dart';
 import 'package:scholar_chat/pages/chat_page.dart';
 import 'package:scholar_chat/pages/cubits/auth_cubit/auth_cubit.dart';
 import 'package:scholar_chat/pages/cubits/chat_cubit/chat_cubit.dart';
 import 'package:scholar_chat/pages/login_page.dart';
 import 'package:scholar_chat/pages/resgister_page.dart';
+import 'package:scholar_chat/simple_observers.dart';
 
 import 'firebase_options.dart';
 
@@ -15,7 +17,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(ScholarChat());
+
+  BlocOverrides.runZoned(
+    () => runApp(ScholarChat()),
+    blocObserver: SimpleObserver(),
+  );
+
 }
 
 class ScholarChat extends StatelessWidget {
@@ -28,9 +35,9 @@ class ScholarChat extends StatelessWidget {
         BlocProvider(
           create: (context) => AuthCubit(),
         ),
-        /*  BlocProvider(
-          create: (context) => ResgisterCubit(),
-        ), */
+        BlocProvider(
+          create: (context) => AuthBloc(),
+        ),
         BlocProvider(
           create: (context) => ChatCubit(),
         ),
@@ -49,7 +56,8 @@ class ScholarChat extends StatelessWidget {
               return CircularProgressIndicator();
             } else {
               if (snapshot.hasData) {
-                return ChatPage();
+                 return LoginPage();
+              //  return ChatPage();
               } else {
                 return LoginPage();
               }

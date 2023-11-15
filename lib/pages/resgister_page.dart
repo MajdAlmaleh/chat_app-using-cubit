@@ -1,12 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:scholar_chat/constants.dart';
 import 'package:scholar_chat/helper/show_snack_bar.dart';
+import 'package:scholar_chat/pages/blocs/auth_bloc/auth_bloc.dart';
 import 'package:scholar_chat/pages/chat_page.dart';
-import 'package:scholar_chat/pages/cubits/auth_cubit/auth_cubit.dart';
-import 'package:scholar_chat/pages/cubits/chat_cubit/chat_cubit.dart';
 import 'package:scholar_chat/widgets/custom_button.dart';
 import 'package:scholar_chat/widgets/custom_text_field.dart';
 
@@ -26,9 +24,9 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-       if (state is ResgisterLoading) {
+        if (state is ResgisterLoading) {
           isLoading = true;
         } else if (state is ResgisterSuccess) {
           isLoading = false;
@@ -107,8 +105,8 @@ class RegisterPage extends StatelessWidget {
                     CustomButon(
                       onTap: () async {
                         if (formKey.currentState!.validate()) {
-                          BlocProvider.of<AuthCubit>(context)
-                              .registerUser(email: email!, password: password!);
+                          BlocProvider.of<AuthBloc>(context).add(RegisterEvent(
+                              email: email!, password: password!));
                         } else {}
                       },
                       text: 'REGISTER',
